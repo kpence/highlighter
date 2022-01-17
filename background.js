@@ -114,6 +114,9 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         case 'get-highlights':
             getHighlights().then(sendResponse);
             return true; // return asynchronously
+        case 'get-lost-highlights':
+            getLostHighlights().then(sendResponse);
+            return true; // return asynchronously
         case 'show-highlight':
             return showHighlight(request.highlightId);
         case 'get-current-color':
@@ -184,6 +187,14 @@ function showHighlight(highlightId) {
 
 function getHighlights() {
     return executeInCurrentTab({ file: 'src/contentScripts/getHighlights.js' });
+}
+
+function getLostHighlights() {
+    function contentScriptGetLostHighlights() {
+        return Object.values(window.highlighter_lostHighlights).map((highlight) => highlight.string);
+    }
+
+    return executeInCurrentTab({ func: contentScriptGetLostHighlights });
 }
 
 function changeColor(colorTitle) {

@@ -208,6 +208,10 @@ body {
     border-radius: 5px;
 }
 
+.highlight.lost {
+    cursor: default;
+}
+
 #highlights-list-empty-state {
     display: flex;
     width: 100%;
