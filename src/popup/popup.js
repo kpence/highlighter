@@ -29,7 +29,7 @@ function colorChanged(colorOption) {
     selectedColorElement.dataset.colorTitle = colorTitle;
 
     // Change the global highlighter color
-    chrome.runtime.sendMessage({ action: 'change-color', color: colorTitle, source: 'popup' });
+    browser.runtime.sendMessage({ action: 'change-color', color: colorTitle, source: 'popup' });
 }
 
 function toggleHighlighterCursor() {
@@ -39,7 +39,7 @@ function toggleHighlighterCursor() {
 }
 
 function copyHighlights() {
-    chrome.runtime.sendMessage({ action: 'track-event', trackCategory: 'highlight-action', trackAction: 'copy-all' });
+    browser.runtime.sendMessage({ action: 'track-event', trackCategory: 'highlight-action', trackAction: 'copy-all' });
     navigator.clipboard.writeText(highlightsListElement.innerText);
 
     // Let the user know the copy went through
@@ -64,7 +64,7 @@ function copyHighlights() {
         newEl.innerText = highlights[i + 1];
         const highlightId = highlights[i];
         newEl.addEventListener('click', () => {
-            chrome.runtime.sendMessage({ action: 'show-highlight', highlightId });
+            browser.runtime.sendMessage({ action: 'show-highlight', highlightId });
         });
         highlightsListElement.appendChild(newEl);
     }
@@ -91,9 +91,9 @@ function copyHighlights() {
     });
 })();
 
-// Retrieve the shortcut for the highlight command from the Chrome settings and display it
+// Retrieve the shortcut for the highlight command from the Browser settings and display it
 (async function initializeShortcutLinkText() {
-    const commands = await chrome.commands.getAll();
+    const commands = await browser.commands.getAll();
     commands.forEach((command) => {
         if (command.name === 'execute-highlight') {
             if (command.shortcut) {
@@ -112,11 +112,11 @@ removeAllButton.addEventListener('click', openRemoveAllModal);
 changeColorButton.addEventListener('click', openChangeColorModal);
 selectedColorElement.addEventListener('click', openChangeColorModal);
 
-shortcutLinkElement.addEventListener('click', () => { // Open the shortcuts Chrome settings page in a new tab
-    chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+shortcutLinkElement.addEventListener('click', () => { // Open the shortcuts Browser settings page in a new tab
+    browser.tabs.create({ url: "about:addons" });
 });
 
 closeButton.addEventListener('click', () => window.close());
 
 // Register (in analytics) that the popup was opened
-chrome.runtime.sendMessage({ action: 'track-event', trackCategory: 'popup', trackAction: 'opened' });
+browser.runtime.sendMessage({ action: 'track-event', trackCategory: 'popup', trackAction: 'opened' });

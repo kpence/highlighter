@@ -12,7 +12,7 @@ function close() {
 }
 
 function confirm() {
-    chrome.runtime.sendMessage({ action: 'remove-highlights' });
+    browser.runtime.sendMessage({ action: 'remove-highlights' });
     window.close(); // Closing here also allows automatic refreshing of the highlight list
 }
 

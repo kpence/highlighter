@@ -1,7 +1,7 @@
-// Converts the chrome runtime call into a promise to more easily fetch the results
+// Converts the browser runtime call into a promise to more easily fetch the results
 function getFromBackgroundPage(payload) {
     return new Promise((resolve, _reject) => {
-        chrome.runtime.sendMessage(payload, (response) => resolve(response));
+        browser.runtime.sendMessage(payload, (response) => resolve(response));
     });
 }
 

@@ -3,22 +3,22 @@
 "use strict";
 
 // Add option when right-clicking
-chrome.contextMenus.create({ title: "Highlight", onclick: highlightTextFromContext, contexts: ["selection"] });
-chrome.contextMenus.create({ title: "Toggle Cursor", onclick: toggleHighlighterCursorFromContext });
-chrome.contextMenus.create({ title: "Highlighter color", id: "highlight-colors" });
-chrome.contextMenus.create({ title: "Yellow", id: "yellow", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
-chrome.contextMenus.create({ title: "Cyan", id: "cyan", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
-chrome.contextMenus.create({ title: "Lime", id: "lime", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
-chrome.contextMenus.create({ title: "Magenta", id: "magenta", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
+browser.contextMenus.create({ title: "Highlight", onclick: highlightTextFromContext, contexts: ["selection"] });
+browser.contextMenus.create({ title: "Toggle Cursor", onclick: toggleHighlighterCursorFromContext });
+browser.contextMenus.create({ title: "Highlighter color", id: "highlight-colors" });
+browser.contextMenus.create({ title: "Yellow", id: "yellow", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
+browser.contextMenus.create({ title: "Cyan", id: "cyan", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
+browser.contextMenus.create({ title: "Lime", id: "lime", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
+browser.contextMenus.create({ title: "Magenta", id: "magenta", parentId: "highlight-colors", type:"radio", onclick: changeColorFromContext });
 
 // Get the initial color value
-chrome.storage.sync.get('color', (values) => {
+browser.storage.sync.get('color', (values) => {
     const color = values.color ? values.color : "yellow";
-    chrome.contextMenus.update(color, { checked: true });
+    browser.contextMenus.update(color, { checked: true });
 });
 
 // Add Keyboard shortcut
-chrome.commands.onCommand.addListener((command) => {
+browser.commands.onCommand.addListener((command) => {
     switch(command) {
         case 'execute-highlight':
             trackEvent('highlight-source', 'keyboard-shortcut');
@@ -48,7 +48,7 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 // Listen to messages from content scripts
-chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
+browser.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
     if (request.action && request.action == 'highlight') {
         trackEvent('highlight-source', 'highlighter-cursor');
         highlightText();
@@ -66,7 +66,7 @@ function highlightTextFromContext() {
 
 function highlightText() {
     trackEvent('highlight-action', 'highlight');
-    chrome.tabs.executeScript({file: 'src/contentScripts/highlight.js'});
+    browser.tabs.executeScript({file: 'src/contentScripts/highlight.js'});
 }
 
 function toggleHighlighterCursorFromContext() {
@@ -76,21 +76,21 @@ function toggleHighlighterCursorFromContext() {
 
 function toggleHighlighterCursor() {
     trackEvent('highlight-action', 'toggle-cursor');
-    chrome.tabs.executeScript({file: 'src/contentScripts/toggleHighlighterCursor.js'});
+    browser.tabs.executeScript({file: 'src/contentScripts/toggleHighlighterCursor.js'});
 }
 
 function removeHighlights() {
     trackEvent('highlight-action', 'clear-all');
-    chrome.tabs.executeScript({file: 'src/contentScripts/removeHighlights.js'});
+    browser.tabs.executeScript({file: 'src/contentScripts/removeHighlights.js'});
 }
 
 function showHighlight(highlightId) {
     trackEvent('highlight-action', 'show-highlight');
 
-    chrome.tabs.executeScript({
+    browser.tabs.executeScript({
         code: `const highlightId = ${highlightId};`,
     }, () => {
-        chrome.tabs.executeScript({file: 'src/contentScripts/showHighlight.js'});
+        browser.tabs.executeScript({file: 'src/contentScripts/showHighlight.js'});
     });
 }
 
@@ -101,10 +101,10 @@ function changeColorFromContext(info) {
 
 function changeColor(color) {
     trackEvent('color-changed-to', color);
-    chrome.storage.sync.set({ color: color });
+    browser.storage.sync.set({ color: color });
 
     // Also update the context menu
-    chrome.contextMenus.update(color, { checked: true });
+    browser.contextMenus.update(color, { checked: true });
 }
 
 function trackEvent(category, action) {
