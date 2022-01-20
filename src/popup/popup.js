@@ -2,7 +2,6 @@ import { getFromBackgroundPage } from "./utils.js";
 import { open as openRemoveAllModal } from "./remove-all-modal.js";
 import { open as openChangeColorModal } from "./change-color-modal.js";
 
-
 const highlightButton = document.getElementById('toggle-button');
 const removeAllButton = document.getElementById('remove-all-button');
 const copyAllButton = document.getElementById('copy-all-button');
@@ -14,7 +13,6 @@ const selectedColorElement = document.getElementById('selected-color');
 const shortcutLinkElement = document.getElementById('shortcut-link');
 const shortcutLinkTextElement = document.getElementById('shortcut-link-text');
 const highlightsListElement = document.getElementById('highlights-list');
-
 
 function colorChanged(colorOption) {
     const { backgroundColor, borderColor } = colorOption.style;
@@ -35,7 +33,8 @@ function colorChanged(colorOption) {
 }
 
 function toggleHighlighterCursor() {
-    chrome.runtime.sendMessage({ action: 'toggle-highlighter-cursor', source: 'popup' });
+    backgroundPage.trackEvent('toggle-cursor-source', 'popup');
+    backgroundPage.toggleHighlighterCursor();
     window.close();
 }
 

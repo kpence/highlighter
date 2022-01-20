@@ -1,8 +1,8 @@
 *.crx
 .idea/
 
-config/secrets.js
-config/secrets.production.js
+config/analytics.js
+config/analytics-production.js
 
 node_modules/
 releases/
